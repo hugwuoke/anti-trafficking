@@ -66,12 +66,11 @@ time_points = sorted(Embeddings.keys())
 plt.figure(figsize=(10, 6))
 
 # Plot the first dimension of the MDS embeddings against time
-plt.scatter(time_points, X_mds, color='blue', zorder=2)
-plt.plot(time_points, X_mds, color='red', linestyle='-', linewidth=2, zorder=1)
+plt.scatter(time_points, X_mds, zorder=2)
+plt.plot(time_points, X_mds, linestyle='-', linewidth=2, zorder=1)
 
 plt.title('Mirror of CTDC Data')
 plt.xlabel('Time')
 plt.ylabel('CMDS Dimension 1')
-plt.grid(True)
 plt.show()
 
