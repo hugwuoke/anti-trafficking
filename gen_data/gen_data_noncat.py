@@ -35,10 +35,15 @@ def generate_non_categorical_data(n_samples=5000):
         # This provides a baseline signal with natural variability (mean=0, std=1).
         X1 = np.random.normal(loc=0, scale=1, size=n_samples)
         
-        # --- X2: Independent Attribute ---
+        '''# --- X2: Independent Attribute ---
         # Originally, X2 ~ Bernoulli(0.1) and is independent of X1.
         # Here, we generate X2 from a uniform distribution between -1 and 1 to ensure no dependency on X1.
-        X2 = np.random.uniform(low=-1, high=1, size=n_samples)
+        X2 = np.random.uniform(low=-1, high=1, size=n_samples)'''
+
+        # --- X2: Independent Attribute ---
+        #Switching to normal distribution to ensure that covariance is a predictable measure of independence. 
+        X2 = np.random.normal(loc=0, scale=1, size=n_samples)
+
         
         # --- X3: Highly Dependent on X1 ---
         # The Bernoulli formulation is X3 ~ Bernoulli(0.9) * X1, making X3 highly dependent on X1.
