@@ -12,6 +12,7 @@ def split_data_into_timesteps(data: pd.DataFrame) -> dict:
 def build_A_matrix(data: np.ndarray) -> np.ndarray:
     # get total number occurances
     n = data.shape[0]
+    # n = data.sum(axis=0)
 
     A = data.T @ data
 
@@ -21,6 +22,7 @@ def get_graph_covariance(A: np.ndarray) -> np.ndarray:
     # Compute the graph covariance matrix
     # get main diagonal of A
     n = np.diag(A) 
+
     graph_covariance = A - np.outer(n, n)
 
     return graph_covariance
@@ -44,11 +46,55 @@ if __name__ == '__main__':
     #     print()
     # plot the first row of the graph covariance matrix for each time step in one plot
 
-    graph_covariances_over_time = np.array([graph_covariances[t][0, :] for t in sorted(list(graph_covariances.keys()))])
-    # print(graph_covariances_over_time)
-    fig, ax = plt.subplots()
-    for feature in graph_covariances_over_time.T:
-        ax.plot(feature, label=f"Feature {len(ax.lines)}", alpha=0.5)
+    graph_covariances_over_time = np.array([graph_covariances[t][0, :] for t in sorted(list(graph_covariances.keys()))])[:, 1:]
 
-    ax.legend()
+    # Custom legend labels for each feature
+    legend_labels = [
+        "(1,2) Independent", 
+        "(1,3) Dependent", 
+        "(1,4) Increasing", 
+        "(1,5) Decreasing", 
+        "(1,6) Shifting", 
+        "(1,7) Spike"
+    ]
+
+    # Use a built-in matplotlib style that doesn't require seaborn
+    plt.style.use('ggplot')
+
+    # Create a figure with two subplots (side by side)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+
+    # Define increased font sizes
+    title_fontsize = 20
+    label_fontsize = 18
+    legend_fontsize = 18
+    tick_fontsize = 18
+
+    # Plot the first 3 features in the left subplot
+    for i in range(3):
+        ax1.plot(graph_covariances_over_time[:, i],
+                label=legend_labels[i],
+                linewidth=2,
+                alpha=0.85)
+    ax1.set_title("Features 1-3", fontsize=title_fontsize)
+    ax1.set_xlabel("Time", fontsize=label_fontsize)
+    ax1.set_ylabel("Covariance", fontsize=label_fontsize)
+    ax1.legend(loc="best", fontsize=legend_fontsize)
+    ax1.tick_params(axis='both', which='major', labelsize=tick_fontsize)
+    ax1.grid(True)
+
+    # Plot the last 3 features in the right subplot
+    for i in range(3, 6):
+        ax2.plot(graph_covariances_over_time[:, i],
+                label=legend_labels[i],
+                linewidth=2,
+                alpha=0.85)
+    ax2.set_title("Features 4-6", fontsize=title_fontsize)
+    ax2.set_xlabel("Time", fontsize=label_fontsize)
+    ax2.set_ylabel("Covariance", fontsize=label_fontsize)
+    ax2.legend(loc="best", fontsize=legend_fontsize)
+    ax2.tick_params(axis='both', which='major', labelsize=tick_fontsize)
+    ax2.grid(True)
+
+    plt.tight_layout()
     plt.show()
